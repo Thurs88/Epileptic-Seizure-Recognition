@@ -66,13 +66,16 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# data files
+input/
+.csv
+
 # IPython
 profile_default/
 ipython_config.py
 
 # pyenv
 .python-version
-
 
 # Environments
 .env
