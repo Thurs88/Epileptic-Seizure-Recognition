@@ -115,7 +115,7 @@ def feature_extract(data):
             
     return df_nf
 
-data = reduce_mem_usage(pd.read_csv('../input/epileptic_seizure_recognition_data.csv'))
+data = reduce_mem_usage(pd.read_csv('../input/data.csv'))
 df = preproc(data)
 final_df = feature_extract(df)
 

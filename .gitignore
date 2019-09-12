@@ -67,8 +67,8 @@ target/
 .ipynb_checkpoints
 
 # data files
-input/
-.csv
+input/*
+*.csv
 
 # IPython
 profile_default/
