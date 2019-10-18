@@ -1,6 +1,7 @@
-# Input Data
+# Input
 FILE_PATH = "../input/"
 FILE_NAME = "epileptic_seizure_recognition_dataset.csv"
+# Output
 RESULT_PATH = "../output/"
 RESULT_FILE_NAME = "eeg_predictions.csv"
 
