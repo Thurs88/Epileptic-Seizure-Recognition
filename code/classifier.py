@@ -7,6 +7,7 @@ from sklearn.model_selection import cross_val_score
 
 from preprocessing import EpilepticRecognitionClass
 
+
 class EEGClassifier(EpilepticRecognitionClass):
 
     def __init__(self):
@@ -28,7 +29,6 @@ class EEGClassifier(EpilepticRecognitionClass):
             self.print_exception_message()
         return svm_classifier
 
-    
     def create_pipeline(self, scaler, reduce_dimension, classifier):
         """
         create pipeline for classification
@@ -40,11 +40,10 @@ class EEGClassifier(EpilepticRecognitionClass):
         print('create pipeline...')
         pipe = Pipeline(
             [('scale', scaler),
-            ('pca', reduce_dimension),
-            ('clf', classifier)]
+             ('pca', reduce_dimension),
+             ('clf', classifier)]
         )
         return pipe
-
 
     def cv_score(self, pipe, X_train, y_train, scoring, folds, n_jobs):
         """
@@ -70,7 +69,6 @@ class EEGClassifier(EpilepticRecognitionClass):
         except Exception:
             self.print_exception_message()
 
-
     def test_model(self, pipe, X_test):
         """
         predict target on test data
@@ -84,7 +82,6 @@ class EEGClassifier(EpilepticRecognitionClass):
         except Exception:
             self.print_exception_message()
         return y_pred
-
 
     def evaluate_model(self, y_test, y_pred):
         """
@@ -100,22 +97,22 @@ class EEGClassifier(EpilepticRecognitionClass):
             print("CONFUSION MATRIX")
             print(confusion_matrix_value)
             print()
-            
-            classification_report_result = classification_report(y_test, y_pred)        
+
+            classification_report_result = classification_report(y_test, y_pred)
             print('CLASSIFICATION REPORT')
             print(classification_report_result)
-            print()        
+            print()
 
             roc_score_value = roc_auc_score(y_test, y_pred) * 100
             roc_score_value = float("{0:.2f}".format(roc_score_value))
-            print("ROC SCORE")        
-            print( "{} %".format(roc_score_value))
+            print("ROC SCORE")
+            print("{} %".format(roc_score_value))
             print()
 
             accuracy_score_value = accuracy_score(y_test, y_pred) * 100
             accuracy_score_value = float("{0:.2f}".format(accuracy_score_value))
-            print("ACCURACY SCORE")        
-            print( "{} %".format(accuracy_score_value))
+            print("ACCURACY SCORE")
+            print("{} %".format(accuracy_score_value))
             print('---------------------------------------')
             print()
         except Exception:

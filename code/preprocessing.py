@@ -1,8 +1,8 @@
 import os
 import sys
 import gc
-
 gc.enable()
+
 import traceback
 import time
 
@@ -21,20 +21,19 @@ class EpilepticRecognitionClass(object):
     def __init__(self):
         pass
 
-
     def read_data(self, csv_file_name, csv_file_path, separator=",", reduce_memory=False, encoding_unicode=None):
         """
         read data from a csv file
-        :param file_name: csv file name
+        :param csv_file_name: csv file name
         :param csv_file_path: csv file path
         :param separator: column separator
-        :reduce_memory: use/not reduce_memory function
+        :param reduce_memory: use/not reduce_memory function
         :param encoding_unicode: csv file encoding unicode
         :return dataframe
         """
         df = None
         try:
-            if reduce_memory == True:
+            if reduce_memory:
                 df = self.reduce_mem_usage(pd.read_csv(csv_file_path + csv_file_name, sep=separator))
             else:
                 df = pd.read_csv(csv_file_path + csv_file_name, sep=separator)
@@ -45,7 +44,6 @@ class EpilepticRecognitionClass(object):
         except Exception:
             self.print_exception_message()
         return df
-
 
     def reduce_mem_usage(self, df):
         """
@@ -85,7 +83,6 @@ class EpilepticRecognitionClass(object):
         print()
         return df
 
-
     def show_file_information(self, df):
         """
         show data file information
@@ -99,7 +96,6 @@ class EpilepticRecognitionClass(object):
             print()
         except Exception:
             self.print_exception_message()
-
 
     def show_file_data(self, df):
         """
@@ -115,7 +111,6 @@ class EpilepticRecognitionClass(object):
             print()
         except Exception:
             self.print_exception_message()
-
 
     def show_descriptive_statistics(self, df):
         """
@@ -135,7 +130,6 @@ class EpilepticRecognitionClass(object):
             print()
         except Exception:
             self.print_exception_message()
-
 
     def check_missing_values(self, df):
         """
@@ -160,14 +154,14 @@ class EpilepticRecognitionClass(object):
                 '% of Total Values', ascending=False).round(1)
             # Print some summary information
             print("Your selected dataframe has " + str(df.shape[1]) + " columns.\n"
-                  "There are " + str(mis_val_table_ren_columns.shape[0]) +
+                                                                      "There are " + str(
+                mis_val_table_ren_columns.shape[0]) +
                   " columns that have missing values.")
         except Exception:
             self.print_exception_message()
         print('-------------------------------------------')
         print()
         return mis_val_table_ren_columns
-
 
     def data_preparation(self, df):
         """
@@ -196,7 +190,6 @@ class EpilepticRecognitionClass(object):
         except Exception:
             self.print_exception_message()
         return df_pr
-
 
     def feature_extract(self, df_pr):
         """
@@ -257,7 +250,6 @@ class EpilepticRecognitionClass(object):
             self.print_exception_message()
         return df_nf
 
-
     def select_label_target(self, df_nf, target_column):
         """
         select X and y dataframes by target column
@@ -272,28 +264,26 @@ class EpilepticRecognitionClass(object):
             self.print_exception_message()
         return X, y
 
-
-    def data_scaler(self, scaler_type):
+    def scaler(self, scaler_type):
         """
         select data scaler
         :param scaler_type: scaler type
         :return scaler object
         """
         try:
-            if (scaler_type == config.DATA_STANDARD_SCALER):
+            if scaler_type == config.DATA_STANDARD_SCALER:
                 scaler = StandardScaler()
-            elif (scaler_type == config.DATA_ROBUST_SCALER):
+            elif scaler_type == config.DATA_ROBUST_SCALER:
                 scaler = RobustScaler()
-            elif (scaler_type == config.DATA_ROBUST_SCALER):
+            elif scaler_type == config.DATA_ROBUST_SCALER:
                 scaler = Normalizer()
-            elif (scaler_type == config.DATA_ROBUST_SCALER):
+            elif scaler_type == config.DATA_ROBUST_SCALER:
                 scaler = MinMaxScaler()
-            elif (scaler_type == config.DATA_ROBUST_SCALER):
+            elif scaler_type == config.DATA_ROBUST_SCALER:
                 scaler = MaxAbsScaler()
         except Exception:
             self.print_exception_message()
         return scaler
-
 
     def reduce_dimension(self, n):
         """
@@ -303,7 +293,6 @@ class EpilepticRecognitionClass(object):
         """
         pca = PCA(n_components=n)
         return pca
-
 
     def split_data(self, X, y, test_size_percentage, random_state, stratify_target=None):
         """
@@ -326,7 +315,6 @@ class EpilepticRecognitionClass(object):
             self.print_exception_message()
         return X_train, X_test, y_train, y_test
 
-
     def cv_folds(self, X_train, y_train, splits):
         """
         split X_train and y_train for evaluation on cross-validate
@@ -342,7 +330,6 @@ class EpilepticRecognitionClass(object):
             self.print_exception_message()
         return gkf
 
-
     def get_submission(self, out_path, out_name, y_pred):
         """
         read target predictions to csv file
@@ -353,7 +340,6 @@ class EpilepticRecognitionClass(object):
         """
         out = np.column_stack((range(1, y_pred.shape[0] + 1), y_pred))
         np.savetxt(out_path + out_name, out, header="patient_id, y", comments="", fmt="%d,%d")
-
 
     @staticmethod
     def print_exception_message(message_orientation="horizontal"):
