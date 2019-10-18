@@ -77,7 +77,8 @@ target/
 .idea/
 
 # data files
-input/*
+input/
+output/
 *.csv
 
 # IPython
