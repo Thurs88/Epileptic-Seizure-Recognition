@@ -1,6 +1,6 @@
 import gc
 gc.enable()
-
+import pickle
 import config
 from classifier import EEGClassifier
 
@@ -16,15 +16,23 @@ def main():
                        csv_file_path=config.FILE_PATH,
                        reduce_memory=config.REDUCE_MEMORY)
     # show data info
-    eeg.show_file_information(df)
-    eeg.show_file_data(df)
-    eeg.show_descriptive_statistics(df)
+    print(df.info())
+    print(df.head())
+    print('Dataframe shape:', df.shape)
+    print("Statistics:")
+    print(df.describe().T)
+    print('Data types: ', list(set(df.dtypes.tolist())))
+    print('Columns with object-type data: ',
+          list(set(df.select_dtypes(include=['O']).columns.tolist())))
+    # N/A values
     eeg.check_missing_values(df)
 
     # data preparation
     df_prepared = eeg.data_preparation(df)
     # feature engineering
     df_nf = eeg.feature_extract(df_prepared)
+    df_nf.to_csv('../data/df_new_feats.csv', index=False)
+
     X, y = eeg.select_label_target(df_nf, config.TARGET_COLUMN_NAME)
     # split data to train/test
     X_train, X_test, y_train, y_test = eeg.split_data(X,
@@ -46,19 +54,26 @@ def main():
         eeg.reduce_dimension(n=config.PCs),
         clf
     )
+
     # get cv-score
-    cv_score = eeg.cv_score(pipe,
-                            X_train, y_train,
+    eeg_pipe = eeg.cv_score(pipe,
+                            X_train,
+                            y_train,
                             scoring=config.SCORING,
                             folds=gkf,
                             n_jobs=config.N_JOBS
-                            )
+    )
+    with open('../models/eeg_pipeline.p', 'wb') as f:
+        pickle.dump(eeg_pipe, f)
+
     # model prediction
-    y_prediction = eeg.test_model(pipe, X_test)
-    # save predictions
-    eeg.get_submission(config.RESULT_PATH, config.RESULT_FILE_NAME, y_prediction)
+    y_prediction = eeg.test_model(eeg_pipe, X_test)
+
     # model evaluation
     eeg.evaluate_model(y_test, y_prediction)
+
+    # save predictions
+    eeg.get_submission(config.RESULT_PATH, config.RESULT_FILE_NAME, y_prediction)
 
 
 if __name__ == '__main__':

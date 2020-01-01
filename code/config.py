@@ -1,8 +1,8 @@
 # Input
-FILE_PATH = "../input/"
-FILE_NAME = "epileptic_seizure_recognition_dataset.csv"
+FILE_PATH = "../data/"
+FILE_NAME = "data.csv"
 # Output
-RESULT_PATH = "../output/"
+RESULT_PATH = "../results/"
 RESULT_FILE_NAME = "eeg_predictions.csv"
 
 TARGET_COLUMN_NAME = "y"

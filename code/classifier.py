@@ -1,17 +1,31 @@
 import config
+from datetime import datetime
+import pickle
 import numpy as np
 from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_auc_score
 from sklearn.model_selection import cross_val_score
 
-from preprocessing import EpilepticRecognitionClass
+from preprocessing import DataPreprocessor
 
 
-class EEGClassifier(EpilepticRecognitionClass):
+class EEGClassifier(DataPreprocessor):
+    """
+    Класс для сборки пайплайна обработки данных,
+    выбора модели и оценки результатов
+    """
 
     def __init__(self):
         super().__init__()
+
+    def timeit(func):
+        def wrapper(*args, **kwargs):
+            start = datetime.now()
+            res = func(*args, **kwargs)
+            print(f'{func.__name__} done! Time:', datetime.now() - start)
+            return res
+        return wrapper
 
     def svm_model(self, kernel, gamma, C, class_weight):
         """
@@ -45,18 +59,19 @@ class EEGClassifier(EpilepticRecognitionClass):
         )
         return pipe
 
+    @timeit
     def cv_score(self, pipe, X_train, y_train, scoring, folds, n_jobs):
         """
         evaluate model
         :param pipe: model pipeline
-        :param X_trtain: X train scaled
+        :param X_train: X train scaled
         :param y_train: train target values
         :param scoring: evaluation metric
         :param folds: number of cv-folds
         :param n_jobs: number of jobs to run in parallel
         :return none
         """
-        print(f'evaluate model...')
+        print('evaluate model...')
         try:
             y_pred = cross_val_score(pipe, X_train, y_train, cv=folds, scoring=scoring, n_jobs=n_jobs)
             pipe.fit(X_train, y_train)
@@ -68,6 +83,7 @@ class EEGClassifier(EpilepticRecognitionClass):
             print()
         except Exception:
             self.print_exception_message()
+        return pipe
 
     def test_model(self, pipe, X_test):
         """
